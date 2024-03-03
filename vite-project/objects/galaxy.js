@@ -7,17 +7,18 @@ import { Haze } from './haze.js';
 export class Galaxy {
 
     constructor(scene) {
-        this.group = new THREE.Group(); // Create a group for the galaxy
+        // Create a group for the galaxy
+        this.group = new THREE.Group();
 
         // Generate stars and haze, then add them to the group instead of directly to the scene
         this.stars = this.generateObject(NUM_STARS, (pos) => new Star(pos));
         this.haze = this.generateObject(NUM_STARS * HAZE_RATIO, (pos) => new Haze(pos));
     
         this.stars.forEach((star) => {
-            star.toThreeObject(this.group); // Pass group here
+            star.toThreeObject(this.group);
         });
         this.haze.forEach((haze) => {
-            haze.toThreeObject(this.group); // And here
+            haze.toThreeObject(this.group);
         });
     
         scene.add(this.group);

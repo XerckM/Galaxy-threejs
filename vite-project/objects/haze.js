@@ -9,7 +9,8 @@ const hazeSprite = new THREE.SpriteMaterial({map: hazeTexture, color: 0x0082ff, 
 export class Haze {
 
     constructor(position, isHaze) {
-        this.position = position.clone(); // Use clone to not modify the original
+        // Use clone to not modify the original
+        this.position = position.clone();
         this.angle = Math.atan2(position.y, position.x); 
         this.isHaze = isHaze
         this.obj = null
@@ -30,12 +31,12 @@ export class Haze {
     
         this.obj = sprite;
     
-        group.add(sprite); // Add to the group
+        group.add(sprite);
     }
 
     updateOrbit() {
         // Calculate the angular speed based on the initial distance (slower for stars further out)
-        let angularSpeed = 0.08 / this.initialDistance; // Adjust this formula as needed
+        let angularSpeed = 0.08 / this.initialDistance;
 
         // Increment the angle for rotation
         this.angle += angularSpeed;

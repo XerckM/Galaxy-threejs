@@ -15,19 +15,18 @@ let canvas, renderer, camera, scene, orbit, baseComposer, bloomComposer, overlay
 function generateBackgroundStars(numStars) {
     for (let i = 0; i < numStars; i++) {
         // Generate a random position for each background star
-        const radius = Math.random() * 3000 + 100; // Ensure they're spawned well outside the galaxy core
+        const radius = Math.random() * 3000 + 100;
         const theta = Math.random() * 2 * Math.PI;
         const phi = Math.acos((Math.random() * 2) - 1);
         
         const x = radius * Math.sin(phi) * Math.cos(theta);
         const y = radius * Math.sin(phi) * Math.sin(theta);
-        const z = radius * Math.cos(phi); // Position stars around the scene in a spherical distribution
+        const z = radius * Math.cos(phi);
 
         // Create a new star at the generated position
-        // Assuming the constructor can handle a THREE.Vector3 for position and a boolean for isStar
         const position = new THREE.Vector3(x, y, z);
-        const backgroundStar = new Star(position, true); // Mark as a star
-        backgroundStar.toThreeObject(scene); // Add the star's THREE.js object to the scene directly
+        const backgroundStar = new Star(position, true); 
+        backgroundStar.toThreeObject(scene);
     }
 }
 
@@ -127,7 +126,7 @@ function render(time) {
     galaxy.stars.forEach(star => star.updateOrbit());
     galaxy.haze.forEach(haze => haze.updateOrbit());
 
-    galaxy.group.rotation.z += 0.00005;
+    galaxy.group.rotation.z += 0.00001;
 
     galaxy.updateScale(camera)
     renderPipeline()
