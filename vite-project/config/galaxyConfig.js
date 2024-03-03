@@ -14,7 +14,7 @@ export const ARM_Y_DIST = 50
 export const ARM_X_MEAN = 200
 export const ARM_Y_MEAN = 100
 
-export const SPIRAL = 3.5
+export const SPIRAL = 4.5
 export const ARMS = 2.0
 
 export const HAZE_RATIO = 0.5
