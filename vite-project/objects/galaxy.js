@@ -7,14 +7,20 @@ import { Haze } from './haze.js';
 export class Galaxy {
 
     constructor(scene) {
+        this.group = new THREE.Group(); // Create a group for the galaxy
 
-        this.scene = scene
-
-        this.stars = this.generateObject(NUM_STARS, (pos) => new Star(pos))
-        this.haze = this.generateObject(NUM_STARS * HAZE_RATIO, (pos) => new Haze(pos))
-
-        this.stars.forEach((star) => star.toThreeObject(scene))
-        this.haze.forEach((haze) => haze.toThreeObject(scene))
+        // Generate stars and haze, then add them to the group instead of directly to the scene
+        this.stars = this.generateObject(NUM_STARS, (pos) => new Star(pos));
+        this.haze = this.generateObject(NUM_STARS * HAZE_RATIO, (pos) => new Haze(pos));
+    
+        this.stars.forEach((star) => {
+            star.toThreeObject(this.group); // Pass group here
+        });
+        this.haze.forEach((haze) => {
+            haze.toThreeObject(this.group); // And here
+        });
+    
+        scene.add(this.group);
     }
 
     updateScale(camera) {
@@ -44,7 +50,10 @@ export class Galaxy {
 
         for (let j = 0; j < ARMS; j++) {
             for ( let i = 0; i < numStars / 4; i++){
-                let pos = spiral(gaussianRandom(ARM_X_MEAN, ARM_X_DIST), gaussianRandom(ARM_Y_MEAN, ARM_Y_DIST), gaussianRandom(0, GALAXY_THICKNESS), j * 2 * Math.PI / ARMS)
+                let angle = j * 2 * Math.PI / ARMS;
+                let ecc = 0.35 + gaussianRandom(0, 0.1);
+                let pos = spiral(gaussianRandom(ARM_X_MEAN, ARM_X_DIST * ecc), gaussianRandom(ARM_Y_MEAN, ARM_Y_DIST * ecc), gaussianRandom(0, GALAXY_THICKNESS), angle)
+                if (i % 2 === 0) pos.applyAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI); // Rotate half the orbits 180 degrees
                 let obj = generator(pos)
                 objects.push(obj)
             }

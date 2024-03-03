@@ -8,9 +8,12 @@ const hazeSprite = new THREE.SpriteMaterial({map: hazeTexture, color: 0x0082ff, 
 
 export class Haze {
 
-    constructor(position) {
-        this.position = position
+    constructor(position, isHaze) {
+        this.position = position.clone(); // Use clone to not modify the original
+        this.angle = Math.atan2(position.y, position.x); 
+        this.isHaze = isHaze
         this.obj = null
+        this.initialDistance = this.position.length();
     }
 
     updateScale(camera) {
@@ -19,16 +22,29 @@ export class Haze {
         this.obj.material.needsUpdate = true
     }
 
-    toThreeObject(scene) {
-        let sprite = new THREE.Sprite(hazeSprite)
-        sprite.layers.set(BASE_LAYER)
-        sprite.position.copy(this.position)
-
-        // varying size of dust clouds
-        sprite.scale.multiplyScalar(clamp(HAZE_MAX * Math.random(), HAZE_MIN, HAZE_MAX))
-
-        this.obj = sprite
-        scene.add(sprite)
+    toThreeObject(group) {
+        let sprite = new THREE.Sprite(hazeSprite);
+        sprite.layers.set(BASE_LAYER);
+        sprite.position.copy(this.position);
+        sprite.scale.multiplyScalar(clamp(HAZE_MAX * Math.random(), HAZE_MIN, HAZE_MAX));
+    
+        this.obj = sprite;
+    
+        group.add(sprite); // Add to the group
     }
 
+    updateOrbit() {
+        // Calculate the angular speed based on the initial distance (slower for stars further out)
+        let angularSpeed = 0.08 / this.initialDistance; // Adjust this formula as needed
+
+        // Increment the angle for rotation
+        this.angle += angularSpeed;
+
+        // Calculate the new position using polar coordinates
+        this.position.x = Math.cos(this.angle) * this.initialDistance;
+        this.position.y = Math.sin(this.angle) * this.initialDistance;
+
+        // Update the object's position to simulate rotation
+        this.obj.position.set(this.position.x, this.position.y, this.position.z);
+    }
 }
